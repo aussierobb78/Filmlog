@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="glass-panel">
+    <h2 style="font-family: var(--font-display); margin-bottom: 20px;">Add New Gear</h2>
+
+    <form action="{{ url_for('add_gear') }}" method="POST">
+        
+        <div class="form-group">
+            <label for="hardware_type">Hardware Type</label>
+            <select id="hardware_type" name="hardware_type" required 
+                    style="width: 100%; height: 45px; background: rgba(0,0,0,0.3); border: 1px solid #444; color: #fff; padding: 0 10px; border-radius: 4px;">
+                <option value="Camera">Camera</option>
+                <option value="Lens">Lens</option>
+                <option value="Flash">Flash</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="name">Model Name</label>
+            <input type="text" id="name" name="name" placeholder="e.g. Nikon F3, 50mm f/1.4..." required autofocus>
+        </div>
+
+        <div class="form-group">
+            <label for="serial_number">Serial Number</label>
+            <input type="text" id="serial_number" name="serial_number" placeholder="Optional">
+        </div>
+
+        <div style="margin-top: 30px;">
+            <button type="submit" class="btn">Save to Inventory</button>
+            <a href="{{ url_for('gear_index') }}" style="margin-left: 20px; color: #888; text-decoration: underline;">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="glass-panel">
+    <h2 style="font-family: var(--font-display); margin-bottom: 20px;">Catalog New Roll</h2>
+
+    {% if error %}
+    <div style="background: rgba(211, 47, 47, 0.2); border: 1px solid #d32f2f; color: #ff8a80; padding: 15px; border-radius: 4px; margin-bottom: 20px; font-weight: bold;">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <form action="{{ url_for('add_roll') }}" method="POST" enctype="multipart/form-data">
+        
+        <div class="form-group">
+            <label for="roll_id">Roll ID (Barcode #)</label>
+            <input type="text" id="roll_id" name="roll_id" 
+                   value="{{ '%04d' % next_id }}" 
+                   required 
+                   inputmode="numeric" pattern="[0-9]*" maxlength="4"
+                   onblur="this.value = this.value.padStart(4, '0')"
+                   style="font-size: 1.5rem; font-family: var(--font-display); color: var(--accent-color); font-weight: bold; width: 150px;">
+            <div style="font-size: 0.8rem; color: #666; margin-top: 5px;">
+                Auto-assigned. Change only if backfilling an old roll.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="film_type">Film Stock</label>
+			<input type="text" id="film_type" name="film_type" 
+               list="list_films"  value="{{ request.form.get('film_type', '') }}" 
+               placeholder="e.g. Kodak Gold 200" required autofocus>
+        </div>
+
+        <div style="display: flex; gap: 20px;">
+            <div class="form-group" style="flex: 1;">
+                <label for="iso">ISO</label>
+                <input type="number" id="iso" name="iso" 
+                       value="{{ request.form.get('iso', '') }}" 
+                       placeholder="Box speed">
+            </div>
+            
+            <div class="form-group" style="flex: 2;">
+                <label for="camera">Camera</label>
+				<input type="text" id="camera" name="camera" 
+					list="list_cameras" value="{{ request.form.get('camera', '') }}" 
+					placeholder="e.g. Canon AE-1">
+            </div>
+        </div>
+
+        <div class="form-group lens-field">
+            <label for="lens">Lens</label>
+			<input type="text" id="lens" name="lens" 
+               list="list_lenses" value="{{ request.form.get('lens', '') }}" 
+               placeholder="e.g. 50mm f/1.8">
+        </div>
+
+        <div class="dates-field" style="display: flex; gap: 20px;">
+            <div class="form-group" style="flex: 1;">
+                <label for="date_started">Date Started</label>
+                <input type="date" id="date_started" name="date_started"
+                       value="{{ request.form.get('date_started', '') }}">
+            </div>
+
+            <div class="form-group" style="flex: 1;">
+                <label for="date_finished">Date Finished</label>
+                <input type="date" id="date_finished" name="date_finished"
+                       value="{{ request.form.get('date_finished', '') }}">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="notes">Notes</label>
+            <textarea id="notes" name="notes" rows="4" 
+                      placeholder="Location, subject, push/pull notes...">{{ request.form.get('notes', '') }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="contact_sheet">Upload Contact Sheet / Preview</label>
+            <input type="file" id="contact_sheet" name="contact_sheet" accept="image/*">
+        </div>
+
+        <div style="margin-top: 30px;">
+            <button type="submit" class="btn">Save Roll to Database</button>
+            <a href="{{ url_for('index') }}" style="margin-left: 20px; color: #888; text-decoration: underline;">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<datalist id="list_films">
+        {% for film in films %}
+        <option value="{{ film }}">
+        {% endfor %}
+    </datalist>
+
+    <datalist id="list_cameras">
+        {% for cam in cameras %}
+        <option value="{{ cam }}">
+        {% endfor %}
+    </datalist>
+    
+    <datalist id="list_lenses">
+        {% for lens in lenses %}
+        <option value="{{ lens }}">
+        {% endfor %}
+    </datalist>
+
+{% endblock %}

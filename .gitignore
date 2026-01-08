@@ -1,0 +1,19 @@
+# OS junk files 
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+Thumbs.db
+ehthumbs.db
+filmlog.spec
+
+# Logs
+*.log
+
+# Editor directories
+.vscode/
+.idea/
+*.swp
+
+# Local specific overrides (optional)
+local-config.js

@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="roll-container">
+    
+    <div class="roll-info">
+        <h2 class="roll-id">ROLL #{{ roll.formatted_id }}</h2>
+        
+        <div class="glass-panel">
+            <div class="detail-item">
+                <span class="detail-label">FILM STOCK:</span>
+                <span class="detail-value">{{ roll.film_type }}</span>
+            </div>
+            
+            <div class="detail-item">
+                <span class="detail-label">ISO:</span>
+                <span class="detail-value">{{ roll.iso if roll.iso else '---' }}</span>
+            </div>
+
+            <div class="detail-item">
+                <span class="detail-label">CAMERA:</span>
+                <span class="detail-value">{{ roll.camera }}</span>
+            </div>
+            
+            <div class="detail-item lens-field">
+                <span class="detail-label">LENS:</span>
+                <span class="detail-value">{{ roll.lens if roll.lens else '---' }}</span>
+            </div>
+
+            <div class="detail-item dates-field">
+                <span class="detail-label">TIMELINE:</span>
+                <span class="detail-value" style="font-size: 1rem;">
+                    {% if roll.date_started or roll.date_finished %}
+                        {{ roll.date_started if roll.date_started else '...' }} 
+                        <span style="color: var(--accent-color); margin: 0 10px;">➔</span> 
+                        {{ roll.date_finished if roll.date_finished else '...' }}
+                    {% else %}
+                        <span style="color: #666; font-size: 0.9rem; font-style: italic;">Not recorded</span>
+                    {% endif %}
+                </span>
+            </div>
+            
+            <div class="detail-item">
+                <span class="detail-label">DATE ARCHIVED:</span>
+                <span class="detail-value">{{ roll.date_added.strftime('%Y-%m-%d') }}</span>
+            </div>
+            
+            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">
+            
+            <div class="detail-item">
+                <span class="detail-label">NOTES:</span>
+                <div class="notes-box">{{ roll.notes }}</div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="{{ url_for('edit_roll', roll_id=roll.id) }}" class="btn">
+                    Edit Details
+                </a>
+                
+                <form action="{{ url_for('delete_roll', roll_id=roll.id) }}" method="POST" onsubmit="return confirm('⚠️ ARE YOU SURE?\n\nThis will permanently delete Roll #{{ roll.formatted_id }} and its image from the database.');">
+                    <button type="submit" class="btn-delete">
+                        Delete Roll 🗑️
+                    </button>
+                </form>
+            </div>
+        </div> </div>
+    
+{% if roll.contact_sheet %}
+    <div class="roll-image">
+        <div class="glass-panel" style="padding: 10px;">
+            <a href="{{ url_for('serve_image', filename=roll.contact_sheet) }}" target="_blank">
+                <img src="{{ url_for('serve_image', filename=roll.contact_sheet) }}" class="preview" alt="Contact Sheet" style="width: 100%; border-radius: 4px;">
+            </a>
+            <div style="text-align: center; margin-top: 10px; color: #666; font-size: 0.8rem; font-family: var(--font-body);">
+                Click image to enlarge
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

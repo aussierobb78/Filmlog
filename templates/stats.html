@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 style="margin-bottom: 20px;">Data Analytics</h2>
+
+<div class="glass-panel" style="text-align: center; padding: 40px;">
+    <div style="font-size: 1rem; color: #aaa; text-transform: uppercase; letter-spacing: 2px;">Total Rolls Archived</div>
+    <div style="font-size: 5rem; font-weight: 800; color: #fff; line-height: 1;">{{ total_rolls }}</div>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px;">
+    
+    <div class="glass-panel" style="flex: 1; min-width: 300px;">
+        <h3>Top Cameras</h3>
+        <table style="margin-top: 10px;">
+            {% for camera, count in cameras %}
+            <tr style="background: transparent; border: none;">
+                <td style="width: 30%; border: none; padding: 8px 0;">{{ camera }}</td>
+                <td style="width: 70%; border: none; padding: 8px 0;">
+                    <div style="background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
+                        <div style="width: {{ (count / total_rolls * 100) }}%; background: var(--accent-color); height: 10px; border-radius: 4px;"></div>
+                    </div>
+                </td>
+                <td style="width: 10%; border: none; padding: 8px 0 8px 10px; font-weight: bold; color: #fff;">{{ count }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="glass-panel" style="flex: 1; min-width: 300px;">
+        <h3>Top Film Stocks</h3>
+        <table style="margin-top: 10px;">
+            {% for film, count in films %}
+            <tr style="background: transparent; border: none;">
+                <td style="width: 30%; border: none; padding: 8px 0;">{{ film }}</td>
+                <td style="width: 70%; border: none; padding: 8px 0;">
+                    <div style="background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
+                        <div style="width: {{ (count / total_rolls * 100) }}%; background: var(--accent-color); height: 10px; border-radius: 4px;"></div>
+                    </div>
+                </td>
+                <td style="width: 10%; border: none; padding: 8px 0 8px 10px; font-weight: bold; color: #fff;">{{ count }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</div>
+{% endblock %}

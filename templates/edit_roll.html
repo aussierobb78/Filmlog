@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="dates-field" style="display: flex; gap: 20px;">
+            <div class="form-group" style="flex: 1;">
+                <label for="date_started">Date Started</label>
+                <input type="date" id="date_started" name="date_started" value="{{ roll.date_started if roll is defined else '' }}">
+            </div>
+
+            <div class="form-group" style="flex: 1;">
+                <label for="date_finished">Date Finished</label>
+                <input type="date" id="date_finished" name="date_finished" value="{{ roll.date_finished if roll is defined else '' }}">
+            </div>
+        </div>
+
+<div class="glass-panel">
+    <h2>Edit Roll #{{ roll.formatted_id }}</h2>
+    
+    <form method="POST" enctype="multipart/form-data" style="box-shadow: none; padding: 0; background: transparent; border: none;">
+        
+        <div class="form-group">
+            <label for="film_type">Film Stock</label>
+            <input type="text" id="film_type" name="film_type" value="{{ roll.film_type }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="iso">ISO</label>
+            <input type="number" id="iso" name="iso" value="{{ roll.iso if roll.iso else '' }}" placeholder="e.g. 400">
+        </div>
+
+        <div class="form-group">
+            <label for="camera">Camera Used</label>
+            <input type="text" id="camera" name="camera" value="{{ roll.camera }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="lens">Lens</label>
+            <input type="text" id="lens" name="lens" value="{{ roll.lens if roll.lens else '' }}" placeholder="e.g. 50mm f/1.8">
+        </div>
+
+        <div class="form-group">
+            <label for="notes">Notes / Development Details</label>
+            <textarea id="notes" name="notes" rows="6">{{ roll.notes }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="contact_sheet">Update Contact Sheet (Leave empty to keep current)</label>
+            <input type="file" id="contact_sheet" name="contact_sheet">
+            
+            {% if roll.contact_sheet %}
+                <div class="current-file-info">
+                    Current file: {{ roll.contact_sheet }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="button-row">
+            <button type="submit" class="btn">Save Changes</button>
+            <a href="{{ url_for('roll_detail', roll_id=roll.id) }}" class="btn-cancel">Cancel</a>
+        </div>
+
+    </form>
+</div>
+{% endblock %}

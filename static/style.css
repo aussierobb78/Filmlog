@@ -1,0 +1,412 @@
+/* =========================================
+   1. THEME DEFINITIONS
+   ========================================= */
+:root {
+    /* 1. DEFAULT (Classic Gold) */
+    --glass-bg: rgba(20, 20, 20, 0.65);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+    --accent-color: #FFC107; 
+    --text-color: #e0e0e0;
+    --bg-gradient: radial-gradient(circle at top left, #2b3242, #111);
+    --font-display: 'Special Elite', 'Courier New', monospace;
+    --font-body: 'Courier Prime', 'Courier New', monospace;
+}
+
+/* 2. NOIR (Monochrome) */
+[data-theme="noir"] {
+    --glass-bg: rgba(0, 0, 0, 0.7);
+    --glass-border: rgba(100, 100, 100, 0.3);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+    --accent-color: #ffffff; 
+    --text-color: #cccccc;
+    --bg-gradient: linear-gradient(to bottom, #111, #000);
+}
+
+/* 3. CITY LIGHTS (Tungsten/Neon) */
+[data-theme="city"] {
+    --glass-bg: rgba(10, 25, 35, 0.7);
+    --glass-border: rgba(255, 50, 50, 0.2);
+    --glass-shadow: 0 0 20px rgba(255, 0, 0, 0.1);
+    --accent-color: #ff3333; 
+    --text-color: #d0f0ff;
+    --bg-gradient: radial-gradient(circle at bottom right, #001f2b, #000);
+}
+
+/* =========================================
+   2. GLOBAL RESETS
+   ========================================= */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body { 
+    font-family: var(--font-body);
+    background: var(--bg-gradient); 
+    background-attachment: fixed;
+    color: var(--text-color); 
+    margin: 0; 
+    padding-bottom: 50px;
+    min-height: 100vh;
+    transition: background 0.5s ease;
+    padding: 20px;
+}
+
+h1, h2, h3, h4, th, .roll-id {
+    font-family: var(--font-display);
+    letter-spacing: 1px;
+}
+
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; display: block; }
+
+.container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+
+/* =========================================
+   3. NAVIGATION (The "Floating Box" Look)
+   ========================================= */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--glass-border);
+    border-radius: 16px;
+    box-shadow: var(--glass-shadow);
+    margin-bottom: 40px;
+    position: relative;
+    z-index: 100; 
+}
+
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 400;
+    color: #fff;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: 2px solid var(--accent-color);
+    line-height: 1;
+    padding: 8px 12px 4px 12px; 
+    border-radius: 4px;
+    background: rgba(0,0,0,0.3);
+}
+.logo span { color: var(--accent-color); }
+
+.nav-links { display: flex; align-items: center; gap: 20px; }
+
+.nav-links a { 
+    color: #aaa; text-decoration: none; font-weight: 500; font-size: 0.95rem;
+    text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; 
+}
+.nav-links a:hover { color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+
+/* =========================================
+   4. BUTTONS & INPUTS
+   ========================================= */
+.btn { 
+    background: var(--accent-color); color: #000 !important; 
+    padding: 10px 25px; border: none; border-radius: 2px;
+    text-transform: uppercase; font-weight: bold; font-size: 0.85rem;
+    letter-spacing: 1px; text-decoration: none; transition: all 0.3s ease;
+    white-space: nowrap;
+    cursor: pointer;
+    font-family: var(--font-body);
+}
+.btn:hover { background: #fff; color: #000 !important; box-shadow: 0 0 15px rgba(255, 255, 255, 0.5); }
+
+/* --- UPDATED: SEARCH BAR SPECIFIC (Fixes Alignment) --- */
+/* --- UPDATED: SEARCH BAR SPECIFIC (Fixes Alignment) --- */
+.search-label {
+    display: block; 
+    margin-bottom: 15px; 
+    color: var(--accent-color);
+    text-transform: uppercase; 
+    font-weight: bold; 
+    letter-spacing: 2px;
+}
+
+.search-bar {
+    width: 100%;
+    height: 48px;         /* Match button height */
+    padding: 0 15px;      /* Side padding only */
+    background: transparent;
+    border: 1px solid var(--accent-color);
+    border-radius: 4px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 1rem;
+    text-align: center;
+    box-sizing: border-box; 
+    
+    /* CRITICAL FIXES FOR ALIGNMENT */
+    margin: 0 !important; /* Removes the global input margins that were pushing it up */
+    display: block;       /* Ensures it behaves like a block box */
+    line-height: 46px;    /* (Height - Border) Forces text vertically center */
+}
+
+/* Focus State */
+.search-bar:focus { 
+    outline: none; 
+    background: rgba(255,193,7, 0.05); 
+}
+
+
+input, textarea { 
+    width: 100%; padding: 15px; margin: 8px 0 20px 0; 
+    background: rgba(0, 0, 0, 0.4); border: 1px solid #444; color: white; 
+    border-radius: 4px; box-sizing: border-box; font-size: 1rem;
+    font-family: 'Consolas', 'Courier New', monospace;
+}
+input:focus, textarea:focus { outline: none; border-color: var(--accent-color); background: rgba(0, 0, 0, 0.6); }
+
+label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-color); font-weight: bold; }
+
+/* =========================================
+   5. GLASS PANELS & TABLES
+   ========================================= */
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    box-shadow: var(--glass-shadow);
+    padding: 30px;
+    margin-bottom: 25px;
+}
+
+/* Table Styles */
+table { width: 100%; border-collapse: separate; border-spacing: 0; padding: 0; }
+th, td { padding: 18px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }
+th { background: rgba(0,0,0,0.5); text-transform: uppercase; font-size: 0.75rem; color: #888; letter-spacing: 1px; }
+tr:hover td { background: rgba(255,255,255,0.05); cursor: pointer; }
+tr a { color: var(--accent-color); text-decoration: none; font-weight: bold; }
+.roll-id { font-family: 'Courier New', monospace; font-weight: bold; color: var(--accent-color); font-size: 1.2em; }
+
+/* =========================================
+   6. UTILITIES (Lens & Mobile)
+   ========================================= */
+/* Helper to hide lens field when pref is off */
+body.lens-disabled .lens-field {
+    display: none !important;
+}
+
+.hamburger { display: none; font-size: 2rem; cursor: pointer; color: var(--accent-color); user-select: none; }
+
+/* Mobile Card View for Tables */
+@media (max-width: 768px) {
+    .container { margin: 20px auto; }
+    .hamburger { display: block; }
+    
+    .nav-links {
+        display: none; flex-direction: column; width: 100%;
+        background: rgba(20, 20, 20, 0.98); backdrop-filter: blur(20px);
+        position: absolute; top: 100%; left: 0; padding: 20px 0;
+        border-bottom: 1px solid var(--accent-color);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.8); z-index: 9999; 
+    }
+    .nav-links.active { display: flex; }
+    .nav-links a { font-size: 1.2rem; padding: 15px; width: 100%; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .nav-links a:last-child { border-bottom: none; }
+    
+    /* Turn Table into Cards */
+    table, thead, tbody, th, td, tr { display: block; }
+    thead tr { position: absolute; top: -9999px; left: -9999px; }
+    tr { margin-bottom: 15px; border: 1px solid var(--glass-border); border-radius: 8px; background: rgba(0,0,0,0.2); }
+    td { border: none; position: relative; padding-left: 50%; text-align: right; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    td:last-child { border-bottom: none; }
+    td:before { 
+        position: absolute; top: 18px; left: 15px; width: 45%; 
+        white-space: nowrap; text-align: left; font-weight: bold; color: var(--accent-color);
+    }
+    td:nth-of-type(1):before { content: "Roll ID"; }
+    td:nth-of-type(2):before { content: "Film"; }
+    td:nth-of-type(3):before { content: "Camera"; }
+    td:nth-of-type(4):before { content: "Lens"; } 
+    td:nth-of-type(5):before { content: "Action"; }
+}
+
+/* =========================================
+   7. PREFERENCES PAGE STYLES 
+   ========================================= */
+
+/* The Layout for Settings Rows */
+.setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+.setting-info { flex: 1; min-width: 250px; }
+.section-title {
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    color: #fff;
+}
+
+/* --- TOGGLE SWITCH --- */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    flex-shrink: 0;
+}
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #444;
+    transition: .4s;
+    border-radius: 34px;
+}
+.slider:before {
+    position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px;
+    background-color: white; transition: .4s; border-radius: 50%;
+}
+input:checked + .slider { background-color: var(--accent-color); }
+input:checked + .slider:before { transform: translateX(26px); }
+
+/* --- THEME SELECTION CARDS --- */
+.theme-grid { display: flex; gap: 20px; flex-wrap: wrap; }
+.theme-option { cursor: pointer; flex: 1; min-width: 200px; }
+
+.theme-card {
+    border: 1px solid var(--glass-border);
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    height: 100%;
+    transition: all 0.3s ease;
+    background: rgba(0,0,0,0.2); 
+}
+.theme-card:hover { 
+    background: rgba(255,255,255,0.05); 
+    border-color: var(--accent-color);
+}
+
+.theme-dot { width: 40px; height: 40px; border-radius: 50%; margin: 0 auto 10px auto; border: 2px solid #555; }
+.bg-gold { background: #FFC107; }
+.bg-noir { background: #fff; }
+.bg-city { background: #ff3333; }
+
+.card-gold { background: rgba(43, 50, 66, 0.5); }
+.card-noir { background: #000; }
+.card-city { background: #001f2b; }
+
+/* =========================================
+   9. ACTION BUTTONS (Edit / Delete)
+   ========================================= */
+
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.btn-delete {
+    background-color: #d32f2f;
+    color: #fff !important;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-family: var(--font-body);
+    letter-spacing: 1px;
+    transition: background 0.3s;
+}
+
+.btn-delete:hover {
+    background-color: #b71c1c;
+    box-shadow: 0 0 10px rgba(211, 47, 47, 0.4);
+}
+
+/* Date Toggle Logic */
+body.dates-disabled .dates-field {
+    display: none !important;
+}
+
+/* Lens Toggle Logic */
+body.lens-disabled .lens-field {
+    display: none !important;
+}
+
+/* =========================================
+   10. CUSTOM SEARCH BUTTON (Updated)
+   ========================================= */
+
+.btn-search {
+    /* Gradient & Shape */
+    background: linear-gradient(to bottom, #FFD54F 0%, #FFC107 40%, #FFB300 100%);
+    color: #121212 !important;
+    border: 1px solid #b08d00;
+    border-radius: 4px;
+    
+    /* Text & Sizing */
+    font-family: var(--font-display);
+    font-weight: bold;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 0 25px;
+    height: 48px; /* Fixed height matching input */
+    box-sizing: border-box;
+    
+    /* Flex Alignment */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    line-height: 1; /* Vertically center the quirky font */
+
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+    transition: all 0.2s ease;
+}
+
+.btn-search:hover {
+    background: linear-gradient(to bottom, #FFE082, #FFCA28, #FFC107);
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(255, 193, 7, 0.4);
+}
+
+.btn-search:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 3px rgba(0,0,0,0.4);
+}
+
+/* =========================================
+   11. FORM UTILITIES (Date Picker Fix)
+   ========================================= */
+
+/* Target the browser's native calendar icon */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    /* 1. Turn the black icon White so it's visible */
+    filter: invert(1);
+    
+    /* 2. Add interaction cues */
+    cursor: pointer;
+    opacity: 0.7;
+    transition: 0.2s;
+}
+
+/* Hover Effect: Turn it Gold */
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+    /* This specific filter matrix approximates your #FFC107 Gold */
+    filter: invert(78%) sepia(64%) saturate(639%) hue-rotate(350deg) brightness(101%) contrast(105%);
+}

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FilmLog</title>
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect x=%2225%22 y=%2220%22 width=%2250%22 height=%2270%22 rx=%225%22 fill=%22%23FDD835%22 stroke=%22%23212121%22 stroke-width=%224%22/><rect x=%2225%22 y=%2220%22 width=%2250%22 height=%2210%22 fill=%22%23757575%22 stroke=%22%23212121%22 stroke-width=%222%22/><rect x=%2240%22 y=%2210%22 width=%2220%22 height=%2210%22 fill=%22%23424242%22/><path d=%22M75 35 L90 40 L90 80 L75 85 Z%22 fill=%22%23424242%22/></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    
+    <div class="container">
+        <nav>
+            <div class="logo">Film<span>Log</span></div>
+            <div class="hamburger" onclick="toggleMenu()">&#9776;</div>
+            <div class="nav-links" id="navLinks">
+                <a href="{{ url_for('index') }}">Dashboard</a>
+				<a href="{{ url_for('stats') }}" class="nav-link">STATS</a>
+            
+            {% if gear_enabled %}
+            <a href="{{ url_for('gear_index') }}" class="nav-link">GEAR</a>
+            {% endif %}
+
+                <a href="{{ url_for('preferences') }}">Preferences</a> 
+                <a href="{{ url_for('add_roll') }}" class="btn">+ New Roll</a>
+            </div>
+        </nav>
+
+        {% block content %}{% endblock %}
+    </div>
+    
+    <script>
+    // --- 1. INITIALIZE ---
+    window.onload = function() {
+        // Auto-focus search
+        var searchBox = document.getElementById("searchFocus");
+        if (searchBox) { searchBox.focus(); }
+
+        // Load Saved Theme
+        const savedTheme = localStorage.getItem('filmLogTheme') || 'gold';
+        setTheme(savedTheme);
+
+        // Load Lens Preference
+        const showLens = localStorage.getItem('filmLogShowLens');
+        if (showLens === 'false') document.body.classList.add('lens-disabled');
+        const lensToggle = document.getElementById('lensToggle');
+        if (lensToggle) lensToggle.checked = (showLens !== 'false');
+
+        // Load Dates Preference
+        const showDates = localStorage.getItem('filmLogShowDates');
+        if (showDates === 'false') document.body.classList.add('dates-disabled');
+        const dateToggle = document.getElementById('dateToggle');
+        if (dateToggle) dateToggle.checked = (showDates !== 'false');
+    };
+
+    // --- 2. MOBILE MENU ---
+    function toggleMenu() {
+        document.getElementById("navLinks").classList.toggle("active");
+    }
+
+    // --- 3. THEME LOGIC (Consolidated) ---
+    function setTheme(themeName) {
+        // A. Update the HTML attribute (This changes the colors)
+        const html = document.documentElement;
+        if (themeName === 'gold') {
+            html.removeAttribute('data-theme');
+        } else {
+            html.setAttribute('data-theme', themeName);
+        }
+        
+        // B. Save to memory
+        localStorage.setItem('filmLogTheme', themeName);
+
+        // C. Update the UI Cards (If we are on the preferences page)
+        // Reset all borders
+        document.querySelectorAll('.theme-card').forEach(card => {
+            card.style.borderColor = 'var(--glass-border)';
+            card.style.boxShadow = 'none';
+        });
+
+        // Highlight the selected one
+        const activeInput = document.querySelector(`input[value="${themeName}"]`);
+        if (activeInput) {
+            const activeCard = activeInput.nextElementSibling;
+            activeCard.style.borderColor = 'var(--accent-color)';
+            activeCard.style.boxShadow = '0 0 15px rgba(255, 255, 255, 0.1)';
+        }
+    }
+
+    // --- 4. TOGGLES (Lens) ---
+    function toggleLensField(checkbox) {
+        const isEnabled = checkbox.checked;
+        localStorage.setItem('filmLogShowLens', isEnabled); 
+
+        if (isEnabled) {
+            document.body.classList.remove('lens-disabled');
+        } else {
+            document.body.classList.add('lens-disabled');
+        }
+    }
+
+    // --- 5. TOGGLES (Dates) ---
+    function toggleDateField(checkbox) {
+        const isEnabled = checkbox.checked;
+        localStorage.setItem('filmLogShowDates', isEnabled); 
+
+        if (isEnabled) {
+            document.body.classList.remove('dates-disabled');
+        } else {
+            document.body.classList.add('dates-disabled');
+        }
+    }
+    </script>
+</body>
+</html>

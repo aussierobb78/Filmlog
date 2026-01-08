@@ -1,0 +1,319 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+    .collapsible-header {
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        user-select: none;
+    }
+    .icon-arrow {
+        transition: transform 0.3s ease;
+        opacity: 0.7;
+    }
+    .active .icon-arrow {
+        transform: rotate(180deg);
+        opacity: 1;
+        color: var(--accent-color);
+    }
+    .panel-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+        opacity: 0;
+    }
+    .panel-content.open {
+        opacity: 1;
+        margin-top: 15px; 
+    }
+</style>
+
+<h2 style="font-family: var(--font-display); margin-bottom: 20px;">System Preferences</h2>
+
+{% if pending_changes %}
+<div style="background: rgba(255, 193, 7, 0.2); border: 1px solid var(--accent-color); color: #fff; padding: 15px; border-radius: 4px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 15px;">
+    <div style="display: flex; align-items: center; gap: 15px;">
+        <span style="font-size: 1.5rem;">⚠️</span>
+        <div>
+            <strong>Restart Required</strong><br>
+            Network settings have been changed. The app is still running on the old settings.
+        </div>
+    </div>
+    
+    <form action="{{ url_for('shutdown') }}" method="POST" style="margin: 0;">
+        <button type="submit" class="btn" style="background: #ff6b6b; color: white; border: none;">
+            Quit Application
+        </button>
+    </form>
+</div>
+{% endif %}
+
+<div class="glass-panel">
+    <div class="collapsible-header" onclick="togglePanel(this)">
+        <h3 class="section-title" style="margin: 0;">General Settings</h3>
+        <svg class="icon-arrow" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </div>
+
+    <div class="panel-content">
+        <div class="setting-row">
+            <div class="setting-info">
+                <div class="setting-label">Track Lens Data</div>
+                <div class="setting-desc">Show fields to record which lens was used for a roll.</div>
+            </div>
+            
+            <label class="switch">
+                <input type="checkbox" id="lensToggle" onchange="toggleLensField(this)">
+                <span class="slider round"></span>
+            </label>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">
+
+        <div class="setting-row">
+            <div class="setting-info">
+                <div class="setting-label">Track Date Started/Finished</div>
+                <div class="setting-desc">
+                    Record when you loaded and finished the roll.
+                </div>
+            </div>
+            
+            <label class="switch">
+                <input type="checkbox" id="dateToggle" onchange="toggleDateField(this)">
+                <span class="slider round"></span>
+            </label>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">
+
+        <div class="setting-row">
+            <div class="setting-info">
+                <div class="setting-label">Gear Inventory</div>
+                <div class="setting-desc">
+                    Enable a dedicated database to track your cameras, lenses, and serial numbers.
+                </div>
+            </div>
+            
+            <form action="{{ url_for('toggle_feature', feature_key='enable_gearlog') }}" method="POST" style="margin: 0;">
+                <label class="switch">
+                    <input type="checkbox" 
+                           {% if gear_enabled %}checked{% endif %} 
+                           onchange="this.form.submit()">
+                    <span class="slider round"></span>
+                </label>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="glass-panel">
+    <div class="collapsible-header" onclick="togglePanel(this)">
+        <h3 class="section-title" style="margin: 0;">Appearance</h3>
+        <svg class="icon-arrow" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </div>
+    
+    <div class="panel-content">
+        <div class="theme-grid">
+            <label class="theme-option">
+                <input type="radio" name="theme" value="gold" onchange="setTheme('gold')" style="display: none;">
+                <div class="theme-card card-gold">
+                    <div class="theme-dot bg-gold"></div>
+                    <div class="theme-name">Classic Gold</div>
+                    <div class="theme-desc">The original warm aesthetic.</div>
+                </div>
+            </label>
+
+            <label class="theme-option">
+                <input type="radio" name="theme" value="noir" onchange="setTheme('noir')" style="display: none;">
+                <div class="theme-card card-noir">
+                    <div class="theme-dot bg-noir"></div>
+                    <div class="theme-name">Noir</div>
+                    <div class="theme-desc">High contrast monochrome.</div>
+                </div>
+            </label>
+
+            <label class="theme-option">
+                <input type="radio" name="theme" value="city" onchange="setTheme('city')" style="display: none;">
+                <div class="theme-card card-city">
+                    <div class="theme-dot bg-city"></div>
+                    <div class="theme-name">City Lights</div>
+                    <div class="theme-desc">Deep blues and neon reds.</div>
+                </div>
+            </label>
+        </div>
+    </div>
+</div>
+
+<div class="glass-panel">
+    <div class="collapsible-header" onclick="togglePanel(this)">
+        <h3 class="section-title" style="margin: 0;">Backup & Restore</h3>
+        <svg class="icon-arrow" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </div>
+
+    <div class="panel-content">
+        <div class="setting-row">
+            <div class="setting-info">
+                <div class="setting-label">Export Data</div>
+                <div class="setting-desc">
+                    Download a zip archive of your data.
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 10px; flex-direction: column; align-items: flex-end;">
+                <a href="{{ url_for('backup') }}" class="btn" style="background: #4CAF50; color: white !important; border: none; width: 100%; text-align: center;">
+                    Data Only (.db)
+                </a>
+                <a href="{{ url_for('backup', images='true') }}" class="btn" style="background: #2196F3; color: white !important; border: none; width: 100%; text-align: center;">
+                    Full Archive (DB + Images)
+                </a>
+            </div>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">
+
+        <div class="setting-row">
+            <div class="setting-info">
+                <div class="setting-label">Restore from Backup</div>
+                <div class="setting-desc">
+                    <strong style="color: #ff9800;">Warning:</strong> This will overwrite your current data.<br>
+                    Upload a previously exported .zip file.
+                </div>
+            </div>
+            
+            <form action="{{ url_for('import_backup') }}" method="POST" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 10px; align-items: flex-end;">
+                <input type="file" name="backup_file" accept=".zip" required 
+                       style="background: #222; color: #fff; padding: 5px; border: 1px solid #444; border-radius: 4px; width: 220px;">
+                
+                <button type="submit" class="btn" onclick="return confirm('WARNING: This will replace your current database with the backup. Are you sure?')"
+                        style="background: #ff9800; color: #000 !important; border: none; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                    Import & Overwrite
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="glass-panel">
+    <div class="collapsible-header" onclick="togglePanel(this)">
+        <h3 class="section-title" style="margin: 0;">Label Generation</h3>
+        <svg class="icon-arrow" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </div>
+
+    <div class="panel-content">
+        <div class="setting-row">
+            <div class="setting-info">
+                <div class="setting-label">Print Barcode Labels</div>
+                <div class="setting-desc">
+                    Generate a PDF for <strong>Avery L7651</strong> (65 per sheet).
+                </div>
+            </div>
+        </div>
+
+        <form action="{{ url_for('generate_labels') }}" method="POST" style="background: transparent; border: none; padding: 0; box-shadow: none; margin-top: 15px;">
+            <div style="display: flex; gap: 15px; align-items: flex-end;">
+                <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                    <label for="start_num" style="margin-bottom: 5px; display: block;">Start Number</label>
+                    <input type="number" name="start_num" id="start_num" value="1" min="1" 
+                           style="margin: 0; height: 40px; padding: 10px; text-align: center;">
+                </div>
+
+                <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                    <label for="label_count" style="margin-bottom: 5px; display: block;">Quantity</label>
+                    <input type="number" name="label_count" id="label_count" value="65" min="1" max="650" 
+                           style="margin: 0; height: 40px; padding: 10px; text-align: center;">
+                </div>
+
+                <button type="submit" class="btn" style="height: 40px; margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <span>Download PDF</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5v14"/><path d="M8 5v14"/><path d="M12 5v14"/><path d="M17 5v14"/><path d="M21 5v14"/></svg>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="glass-panel">
+    <div class="collapsible-header" onclick="togglePanel(this)">
+        <h3 class="section-title" style="margin: 0;">Network Settings</h3>
+        <svg class="icon-arrow" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </div>
+
+    <div class="panel-content">
+        <form action="{{ url_for('save_advanced') }}" method="POST">
+            <div class="setting-row">
+                <div class="setting-info">
+                    <div class="setting-label">Accessibility</div>
+                    <div class="setting-desc">
+                        <strong>Localhost Only:</strong> Private.<br>
+                        <strong>Network:</strong> Visible to other devices on WiFi.
+                    </div>
+                </div>
+                
+                <div style="width: 150px;">
+                    <select name="server_host" style="width: 100%; padding: 8px; background: #222; border: 1px solid #444; color: #fff; border-radius: 4px;">
+                        <option value="local" {% if current_host == '127.0.0.1' %}selected{% endif %}>Local Only</option>
+                        <option value="network" {% if current_host == '0.0.0.0' %}selected{% endif %}>Network (Public)</option>
+                    </select>
+                </div>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">
+
+            <div class="setting-row">
+                <div class="setting-info">
+                    <div class="setting-label">Server Port</div>
+                    <div class="setting-desc">
+                        Default is 5000. <em style="color: #ff6b6b;">Restart required.</em>
+                    </div>
+                </div>
+                
+                <input type="number" name="server_port" value="{{ current_port }}" min="1024" max="65535"
+                       style="width: 100px; padding: 8px; background: #222; border: 1px solid #444; color: var(--accent-color); border-radius: 4px; font-weight: bold; text-align: center;">
+            </div>
+
+            <div style="margin-top: 20px; text-align: right;">
+                <button type="submit" class="btn">Save & Request Restart</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="glass-panel">
+    <h3 class="section-title">Support</h3>
+
+    <div class="setting-row">
+        <div class="setting-info">
+            <div class="setting-label">Feedback & Support</div>
+            <div class="setting-desc">Found a bug or want to support development?</div>
+        </div>
+        
+        <div style="display: flex; gap: 10px; flex-direction: column; align-items: flex-end;">
+            <a href="mailto:service@mascmedia.net?subject=FilmLog%20Feedback" class="btn" style="background: var(--text-color); color: #000 !important; border: none; width: 100%; text-align: center;">
+                Email Support
+            </a>
+            
+            <a href="https://buymeacoffee.com/filmlog" target="_blank" class="btn" style="background: #FFDD00; color: #000 !important; border: none; width: 100%; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+                Buy Me a Coffee
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function togglePanel(header) {
+        header.classList.toggle("active");
+        var content = header.nextElementSibling;
+        content.classList.toggle("open");
+        if (content.style.maxHeight) {
+            content.style.maxHeight = null;
+        } else {
+            content.style.maxHeight = content.scrollHeight + "px";
+        }
+    }
+</script>
+
+{% endblock %}

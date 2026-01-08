@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="glass-panel">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="font-family: var(--font-display);">Gear Inventory</h2>
+        <a href="{{ url_for('add_gear') }}" class="btn">
+            + Add Item
+        </a>
+    </div>
+
+    {% if gear_list %}
+    <table style="width: 100%; border-collapse: collapse; color: #fff;">
+        <thead>
+            <tr style="border-bottom: 2px solid var(--accent-color); text-align: left;">
+                <th style="padding: 10px;">Type</th>
+                <th style="padding: 10px;">Model Name</th>
+                <th style="padding: 10px;">Serial #</th>
+                <th style="padding: 10px; text-align: right;">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in gear_list %}
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                <td style="padding: 15px 10px;">
+                    <span style="background: rgba(255,193,7,0.2); color: var(--accent-color); padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">
+                        {{ item.hardware_type }}
+                    </span>
+                </td>
+                <td style="padding: 15px 10px; font-weight: bold; font-size: 1.1rem;">{{ item.name }}</td>
+                <td style="padding: 15px 10px; font-family: 'Courier New', monospace; color: #aaa;">{{ item.serial_number }}</td>
+                <td style="padding: 15px 10px; text-align: right;">
+                    <form action="{{ url_for('delete_gear', id=item.id) }}" method="POST" onsubmit="return confirm('Remove {{ item.name }}?');" style="display:inline;">
+                        <button type="submit" style="background:none; border:none; color: #ff6b6b; cursor: pointer; font-size: 1.2rem;">&times;</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <div style="text-align: center; padding: 40px; color: #666;">
+            No gear added yet.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

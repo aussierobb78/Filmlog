@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="glass-panel" style="text-align: center; padding: 40px;">
+    <form action="/" method="GET" style="margin: 0;">
+        <label for="searchFocus" class="search-label">
+            Scan Barcode / Search Database
+        </label>
+        
+        <div style="display: flex; gap: 15px; max-width: 600px; margin: 0 auto; align-items: center;">
+            <input type="text" id="searchFocus" name="q" value="{{ search_query }}" 
+                   class="search-bar"
+                   placeholder="Scan ID (0001) or type camera..." 
+                   autocomplete="off">
+            
+            <button type="submit" class="btn-search">
+                <span>Search</span> 
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/></svg>
+            </button>
+        </div>
+    </form>
+</div>
+
+<h3 style="margin-bottom: 20px; font-weight: bold; font-size: 1.2rem;">
+    {% if search_query %}Search Results{% else %}Recently Added{% endif %}
+</h3>
+
+<div class="glass-panel" style="padding: 0;">
+    <table>
+        <thead>
+            <tr>
+                <th width="15%">Roll ID</th>
+                <th>Film Stock</th>
+                <th>Camera</th>
+                <th class="lens-field">Lens</th> 
+                <th width="15%">Details</th> 
+            </tr>
+        </thead>
+        <tbody>
+            {% for roll in results %}
+            <tr>
+                <td style="font-weight: bold; color: #fff;">{{ roll.formatted_id }}</td>
+                <td>{{ roll.film_type }}</td>
+                <td>{{ roll.camera }}</td>
+                <td class="lens-field">{{ roll.lens if roll.lens else '---' }}</td>
+                <td>
+                    <a href="{{ url_for('roll_detail', roll_id=roll.id) }}" style="color: #666; font-size: 0.8rem; text-transform: uppercase; font-weight: bold;">
+                        View &rarr;
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 60px; color: #888;">
+                    No rolls found. 
+                    <a href="{{ url_for('add_roll') }}" style="color: var(--accent-color); font-weight: bold;">Add one now?</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
